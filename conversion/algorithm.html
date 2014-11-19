@@ -1,0 +1,27 @@
+<html><head><title>High-speed Conversion of Floating Point Images to
+8-bit</title></head><body bgcolor=black text=#c0c0c0 link=#80c0c0 vlink=#ffc0c0>
+
+<h1>The Algorithm</h1>
+
+<p><img src=pics/diagram.png>
+
+<p>The table is filled by putting 0x8000 into the lower bits of the
+floating point number, calculating the output result in the range 0 to
+1.0, and storing that result multiplied by 0xFF00 into the table.
+
+<p>The top 8 bits from the table are the output byte.
+
+<p>The bottom 8 bits are the "error" value, and are used to do error
+diffusion dithering. They are added to the next value looked up in the
+table. The top 8 bits of this 16-bit sum are used as the next byte to
+write, and the bottom 8 bits are used as the next error value.
+
+<p>This error diffusion will produce stripes in any image that has
+identical scanlines. To prevent this, a random horizontal position is
+chosen to start the error diffusion at, and it proceeds in both
+directions away from this point.
+
+<p>Many error diffusion algorithims will reset the error to zero when
+a 0 or 1 value is encountered. This can produce stripes on the other
+side of a solid area of 0 or 1. My algorithim preserves the error
+through these spaces so the other side starts out at a random value.

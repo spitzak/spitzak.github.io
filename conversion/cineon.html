@@ -1,0 +1,60 @@
+<html><head><title>High-speed Conversion of Floating Point Images to
+8-bit</title></head><body bgcolor=black text=#c0c0c0 link=#40c0c0>
+
+<h1>Cineon files</h1>
+
+In film production negative is usually scanned to the Cineon file
+format designed by Kodak.
+
+<p>Kodak documents the Cineon file quite carefully. Each number in the
+file is supposed to represent .002 times the base-10 logarithim of the
+density of the film. They also document that the negative's density is
+proportional to the amount of light that struck the film raised to a
+power called the "gamma" of the film, which is about .6. There is also
+a "base" density that is added to this value (unexposed film does not
+have zero density) but normally the Cineon scanner or software is
+adjusted to subtract this during scanning. There is also very
+non-proportional roll-off sections of the transfer function at the top
+and bottom, but I will ignore them here, it turns out that you can't
+do much better with them anyway.
+
+<p>Therefore you should be able to recreate the original light levels
+by converting each number x in the file with
+pow(10.0,(x-W)*.002/gamma). In this function W is the "whitepoint"
+which is the value from the file that you want to turn into 1.0 on the
+screen. Kodak also recommends a value of 685 for this. Since zero
+exposure cannot be represented, the lowest value in the file turns
+into a non-zero value.
+
+<p>Lots of software tries to convert straight to sRGB by a power
+function. This cannot match, as the slope at the low end is zero,
+while the slope of the exposure that produced the Cineon file is
+always positive:
+
+<p><img src=cineon.png>
+<br><i>Green: "correct" Cineon conversion followed by sRGB:</i>
+to_sRGB(pow(10,(x-685)*.002/.6))
+<br><i>Red: typical conversion:</i> pow(x/685,1/.6)
+
+<form>
+Here is a comparison of a well-known sample image converted by
+these two methods:
+
+<br><img src=pics/kodaksrgb.jpg name=image>
+
+<br>
+<input type=radio onClick="image.src = 'pics/kodaksrgb.jpg'"
+checked>"Correct" Cineon conversion
+<input type=radio onClick="image.src = 'pics/kodaklinear.jpg'">Typical conversion
+
+<p>Although the typical conversion looks better due to the increased
+contrast, the correct conversion is a much more accurate
+representation of the original scene luminance. Notice that dark
+parts of the background are more visible and the hair detail is clearer.
+
+<p><a href=index.html>Go back</a>
+
+</form>
+
+</body></html>
+

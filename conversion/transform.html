@@ -1,0 +1,33 @@
+<html><head><title>High-speed Conversion of Floating Point Images to
+8-bit</title></head><body bgcolor=black text=#c0c0c0 link=#80c0c0 vlink=#ffc0c0>
+
+<p>Linear floating point calculations can also help with
+transformations:
+
+<p>The left image is a 1-pixel grid. The middle image is the grid
+rotated and scaled down slightly in linear space and converted to sRGB
+(the transformation is a 2-pass variation of the Catmull Rom
+algorithim with Mitchell filtering). The right image is the same grid
+rotated and scaled using image pixels, like most software does.
+Notice that it loses a lot of luminance and introduces aliasing
+artifacts.
+
+<p><img src=pics/grid.png><img src=pics/gridrotsrgb.png><img src=pics/gridrotlinear.png>
+
+<p>This next compares antialiased graphics drawn in linear space and
+then converted to sRGB (left), with the same graphics drawn in sRGB
+space (right) like most programs and rendering libraries do.  Simple
+antialising is used (the letters are drawn with 16x oversampling and
+box-filtered to the result, the shape is drawn using linear pixel
+coverage calculations).
+
+<p><img src=pics/textasrgb.png><img src=pics/textalinear.png>
+
+<p>If you examine it closely you will see the antialiasing is much
+better on the linear version. However, there are a few <a
+href=notlinear.html>problems</a> with linear space for graphics.
+
+<p><a href=composite.html>Go back</a>
+
+</body></html>
+

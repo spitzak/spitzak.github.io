@@ -1,0 +1,68 @@
+<html><head><title>High-speed Conversion of Floating Point Images to
+8-bit</title></head><body bgcolor=black text=#c0c0c0 link=#80c0c0 vlink=#ffc0c0>
+
+<center><h1>High-speed Conversion of Floating Point Images to 8-bit</h1>
+<b>Bill Spitzak
+<br>Digital Domain</b></center>
+
+<p><i>Copyright &copy; 2002 by Digital Domain and Bill Spitzak.  Feel
+free to copy or reference these pages in your own documentation,
+provided you preserve the copyright notice and authorship information.
+<b>The source code is under the <a href=COPYING.html>General Public
+License (GPL)</a></b>, but it is also available under other licensing
+terms if you desire. Please contact Digital Domain if you wish to use
+it under a different license.</i>
+
+<p>My paper describes a method I have developed at <a
+href=www.d2.com>Digital Domain</a> to accurately and quickly convert
+between "linear floating point" and the more common "sRGB bytes"
+representations of the images. The method is simple and fast. It uses
+dithering to avoid posterizing, and can be implemented in hardware.
+
+<p>But it appears that there is still a need to explain exactly
+what these terms mean, and why this conversion is desirable. Click on each
+of these chapters to read my attempts to explain this rather simple,
+but for some reason very confusing, subject:
+
+<br><br><br><br>
+<ul>
+
+<p><a href=calibrate.html>Calibrate your monitor!</a>
+
+<p><a href=srgb.html>What is sRGB?</a>
+
+<p><a href=whysrgb.html>Why store files in sRGB?</a>
+
+<p><a href=linear.html>What is Linear Floating Point?</a>
+
+<p><a href=composite.html>Why Calculate in Linear Floating Point?</a>
+
+<p><a href=notlinear.html>When does Linear Floating Point not work?</a>
+
+<p><a href=dithering.html>What is dithering?</a>
+
+</ul>
+
+<p>Okay, now it is finally time to talk about my algorithim:
+
+<ul>
+
+<p><a href=sketches_0265.pdf>sketches_0265.pdf</a> - My Siggraph
+sketch on the linear &lt;-&gt; sRGB algorithm.
+
+<p><a href=algorithm.html>The algorithm</a>
+
+<p><a href=accuracy.html>Function plots showing the accuracy of this algorithm</a>.
+
+<p><a href=conversion.h>conversion.h</a> - Declarations for sample source
+code.
+
+<p><a href=conversion.c>conversion.c</a> - Sample source
+code.
+
+<p><a href=cineon.html>Converting Cineon files to Linear Floating Point</a>
+
+</ul>
+
+</body></html>
+

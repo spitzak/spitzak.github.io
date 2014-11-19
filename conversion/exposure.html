@@ -1,0 +1,128 @@
+<html><head><title>High-speed Conversion of Floating Point Images to
+8-bit</title></head><body bgcolor=black text=#c0c0c0 link=#80c0c0 vlink=#ffc0c0>
+
+<form>
+
+<h1>Exposure demonstration</h1>
+
+Here is a sequence of images shot on film at different f-stops. The
+original images were shot at each half t-stop (every picture increases
+the exposure by the square root of 2) on a 35mm camera onto Kodak 5248
+stock. The negative was then developed and scanned on a Kodak Cineon
+scanner to a logarithmic Cineon file:
+
+<p><img src=pics/exposure.0009.jpg name="myimage">
+
+<p>Click here to see each picture. The scans were converted to linear
+floating point and then to sRGB by using the math described <a
+href=cineon.html>here</a> and then written as jpeg files. If your
+monitor is correctly adjuested and you have an accurate light meter
+you can see that the luminance increases by a factor of 2 each 2
+f-stops for the middle range:
+
+<br>
+<input type=radio onClick="myimage.src='pics/exposure.0001.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0002.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0003.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0004.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0005.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0006.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0007.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0008.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0009.jpg'" checked>&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0010.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0011.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0012.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0013.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0014.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0015.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0016.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/exposure.0017.jpg'">&nbsp;
+
+<p>Next is a simple attempt to match all the exposures by multiplying
+the linear floating point by the correct power of 2 to compensate for
+the f-stop. This shows that even simple math is quite successful when
+working in linear floating point. This is despite the fact that there
+is plenty of non-linearity in the mechanical f-stops on the camera, in
+the film emulsion, in the film processing, and in the scanner's photo
+detector. The low end is too bright due to the low-end rolloff in the
+film response, and there are color shifts due to different roll-offs
+at each end of each color emulsiion:
+
+<br>
+<input type=radio onClick="myimage.src='pics/corrected.0001.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0002.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0003.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0004.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0005.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0006.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0007.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0008.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0009.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0010.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0011.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0012.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0013.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0014.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0015.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0016.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/corrected.0017.jpg'">&nbsp;
+
+<p>Here is what happens if such simple math is applied directly to the
+sRGB data, as many programs will try to do. This is a complete
+failure, no images match in luminance! Most users conclude that
+scanning and film are extremely non-linear, rather than blame their
+monitor or the person who wrote their software:
+
+<br>
+<input type=radio onClick="myimage.src='pics/linearcorrected.0001.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0002.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0003.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0004.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0005.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0006.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0007.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0008.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0009.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0010.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0011.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0012.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0013.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0014.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0015.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0016.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearcorrected.0017.jpg'">&nbsp;
+
+<p>Here is an attempt to do as well as Linear Floating Point by
+manually adjusting the multiplier when working on the sRGB data.  Each
+frame was measured and a multiplier chosen to get the green value of
+the center sample equal on all frames. This took considerably more
+user input and time than the other solutions, and still is not as good
+in that the contrast of the gray ramps varies considerably, this can
+only be fixed by more complex color lookup tables.
+
+<br>
+<input type=radio onClick="myimage.src='pics/linearmanual.0001.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0002.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0003.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0004.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0005.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0006.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0007.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0008.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0009.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0010.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0011.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0012.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0013.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0014.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0015.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0016.jpg'">&nbsp;
+<input type=radio onClick="myimage.src='pics/linearmanual.0017.jpg'">&nbsp;
+
+<p><a href=index.html>Okay, enough demos, back to the paper.</a>
+
+</form>
+
+</body></html>
+

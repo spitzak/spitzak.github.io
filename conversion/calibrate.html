@@ -1,0 +1,56 @@
+<html><head><title>High-speed Conversion of Floating Point Images to
+8-bit</title></head><body bgcolor=black text=#c0c0c0 link=#80c0c0 vlink=#ffc0c0>
+
+<h1>Calibrate your monitor!</h1>
+
+<ul><p>Please follow these instructions to get your monitor ready to
+correctly display the sRGB images used in these pages. What these
+instructions do is adjust your monitor to match the sRGB definition as
+closely as possible.</ul>
+
+<ul><p>1. Set the Contrast <img src=pics/contrast.gif> control of the monitor
+to maximum.</p><br>
+
+<p>2. View this chart at a distance of several feet, or squint so that
+the horizontal lines are not visible.</p><br>
+
+<p align=center><img src=pics/calibrate.gif><img src=pics/calibrate.gif><img src=pics/calibrate.gif><img src=pics/calibrate.gif><img src=pics/calibrate.gif></p>
+
+<p>3. Adjust the Brightness <img src=pics/brightness.gif> control of the
+monitor so that the vertical stripes are all the same intensity and
+disappear as much as possible. If there seems to be a range in which
+they match about the same, set the Brightness at the <i>lowest</i> end of the
+range.
+</p>
+
+</ul>
+
+<h2>What is this chart showing?</h2>
+
+<p>It was calculated in floating point and
+converted to 8-bit file by using the sRGB and dithering algorithims
+described in this paper.
+
+<p>The gray columns are a ramp from .005 to
+5.005. The striped columns alternate 2 pixels of .01 and 2 pixels of
+2*G-.01 (where G is the gray to the left). If your monitor is
+displaying sRGB correctly these should average to G and the columns
+should be the same luminance.
+
+<p>Unlike most such charts, I used 2 rows per stripe to reduce the
+effect of blooming that most crt's have.  You can reduce this even
+more by zooming in on the image an integer number of times and
+covering the screen with diffusion material to blur it.
+
+<p>I also did not use black in the dark stripes to reduce errors
+caused by ambient light, except at the bottom where the stripe colors
+are reversed. On my screen it is not possible to adjust the bottom area to
+match.
+
+<p>The file was saved as a .gif rather then a .png due to some
+browsers making attempts to gamma-correct .png files.
+
+<p><a href=index.html>Return to main page</a>
+
+</body></html>
+

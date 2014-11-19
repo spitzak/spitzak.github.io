@@ -1,0 +1,41 @@
+<html><head><title>font_matrix demo for Cairo</title></head><body>
+<h1>font_matrix demo for Cairo</h1>
+
+<p>Showing my proposal for font_matrix and no y_advance values:
+
+<p align=center><img src=cairo_text.png></p>
+
+<p>This demo image was laid out by hand and should not be assummed to
+be accurate!
+
+<p>Each line shows text drawn with a single Cairo draw_utf8 call. The
+font matrix is rotated 0 degrees, 60 degrees, and 90 degrees for each
+of them, and the current Cairo transformation is rotated in the opposite
+direction the same amount (0, -60, and -90 degrees).
+
+<p>The line shows the X axis in the Cairo transformation.
+
+<p>The red dots show the "origin" for each glyph. In the Cairo
+transformation these always have the same Y value, because there is no
+such thing as y_advance.
+
+<p>The distance between the red dots shows the x_advance. Notice that
+it is different depending on the font_matrix. When vertical it is
+equal to the vertical-advance value provided by the font.
+
+<p>The gray squares are the bounding boxes returned by
+text_extents. These are rectangles in the current Cairo transform and
+thus always parallel with the x axis.
+
+<p>As the glyph is rotated by font_matrix the origin and x_advance
+move around as well, smoothly going from the horizontal to the
+vertical positions. I'm not sure what the best algorithim is, it may
+depend on the font. In this example I have the origin travel along the
+right-angle path defined by the horizontal and vertical advance values,
+and the advance travel along the arc between these values. They thus
+travel along the edges of the red arc shown drawn on the diagonal T.
+
+</body></html>
+
+
+

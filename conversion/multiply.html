@@ -1,0 +1,56 @@
+<html><head><title>High-speed Conversion of Floating Point Images to
+8-bit</title></head><body bgcolor=black text=#c0c0c0 link=#80c0c0 vlink=#ffc0c0>
+
+<form>
+
+Here is an image (this is an overhead view of lights in downtown Los
+Angeles). This is just a plain old 8-bit per color image, it is not
+High Dynamic Range or anything:
+
+<br><img src=pics/original.jpg name="myimage">
+
+<br>We want to try to make those lights brighter. Let's try some simple
+manipulation. We will try to multiply the luminance everywhere, as
+though the exposure was longer, and see if we get a nice picture. Here
+is what most programs, including PhotoShop, will do:
+
+<p>
+<input type=radio name=op1 value="val" onClick="myimage.src = 'pics/original.jpg'" checked>1
+<input type=radio name=op1 value="val" onClick="myimage.src = 'pics/02linear.jpg'">2
+<input type=radio name=op1 value="val" onClick="myimage.src = 'pics/04linear.jpg'">4
+<input type=radio name=op1 value="val" onClick="myimage.src = 'pics/08linear.jpg'">8
+<input type=radio name=op1 value="val" onClick="myimage.src = 'pics/16linear.jpg'">16
+<input type=radio name=op1 value="val" onClick="myimage.src = 'pics/32linear.jpg'">32
+
+<p>Well, that looks a lot like what people are used to seeing when
+they mess with images using a computer.  (In fact this is a higher
+quality conversion than most programs, as I did it in floating point
+and dithered the results back to 8 bits. Most programs use an 8-bit to
+8-bit lookup table which necessarily means some color information is
+lost, due to the pigeonhole principle). Most users then give up after
+seeing this, and use more complicated color corrections such as
+histograms or lookup curves to get what they want.
+
+<p>But what if the math is done in Linear Floating Point?  In these
+next examples the image was converted from sRGB to linear floating
+point, multiplied by a constant, and then converted back to sRGB:
+
+<p>
+<input type=radio name=op1 value="val" onClick="myimage.src = 'pics/original.jpg'">1
+<input type=radio name=op1 value="val" onClick="myimage.src = 'pics/02srgb.jpg'">2
+<input type=radio name=op1 value="val" onClick="myimage.src = 'pics/04srgb.jpg'">4
+<input type=radio name=op1 value="val" onClick="myimage.src = 'pics/08srgb.jpg'">8
+<input type=radio name=op1 value="val" onClick="myimage.src = 'pics/16srgb.jpg'">16
+<input type=radio name=op1 value="val" onClick="myimage.src = 'pics/32srgb.jpg'">32
+
+<p>Okay, I hope you can see that the second example looks a lot more like
+an increased exposure of the image. Yes nothing fancy is being done,
+just really simple math! Even if it is not perfect, it is much closer,
+and the user has a lot less work to do to get it perfect.
+
+<p><a href=composite.html>Go back</a>
+
+</form>
+
+</body></html>
+

@@ -1,0 +1,166 @@
+<html><head><title>Y design document</title></head><body
+bgcolor=white>
+
+<h1>Why Y?</h1>
+
+The newest version of the Qt tookit does anti-aliased rendering, but
+you can only use this interesting graphics feature if you abandon any
+other software development and use the Qt toolkit. This can present an
+enormous learning curve, or be totally impractical for existing
+software, and locks you into GUI design decisions that many disagree
+with.
+
+<p>This is equivalent to requiring you to run MySQL in order to use
+the "mkdir" command.
+
+<p>The fact that Qt (or MySQL) is free is no excuse. Both are so large
+and complex that for the average programmer the source code provides
+no more information than a closed-source toolkit.
+
+<p>If you look below Qt you will find Xlib (and the XRender
+extension). These supposely low-level interfaces are obscenely
+baroque with thousands of calls that nobody can remember, and are in
+fact too low level, requiring all modern systems to provide an
+interface that matches hardware designed in the 1980's. The interface
+is nowhere near abstract enough, either, which can be easily seen in
+that no toolkit attempts to emulate Xlib on another system such as
+Windows, instead the toolkit code itself is rewritten for that system.
+
+<p>Y is an attempt to solve this, by making a low-level library
+that is easy to program and powerful enough that Qt can become a true
+portable toolkit, rather than a huge programming system.
+
+<p>I want to try very hard to make Y <i>do everything it should</i>,
+and perhaps more importantly: <i>not do anything it shouldn't</i>.
+
+<p>The number one criteria for the Y interface is that it be easy to
+program for. The number two criteria is that it be easy to program
+for. This is also the number three, four, etc criteria. All other
+considerations <i>including efficiency</i> are secondary to this. But
+in my experience simple interfaces actually are far more efficient in
+the long run, because they don't lock the implementation the way
+complex ones do. I think the simple Unix file interface (open, close,
+seek, read, write) is a good example, it handles phenominally fast
+throughput and disks and networks of a size that was unimagined when
+it was designed, and only tiny additions (like copyfile) are
+needed. Compare this with the baroque Unix tty interface, which is
+useless nowadays except in simplified raw mode.
+
+<h1>How Y?</h1>
+
+The Y library will primarily be seen as a replacement for Xlib.
+
+<p>The initial version runs atop Xlib and Xft and lpr. Later versions
+of Y will completely replace Xlib and Xft. After that portions of Y
+can be migrated to the X server. An "emulate Xlib atop Y" library will
+be written at that time so that new servers that only serve Y clients
+will be possible.
+
+<p>A version of Y also works on MicroSoft Windows, to allow programs
+using Y to be ported easily between Unix and Windows platforms. This
+version uses Win32 GDI much like Xlib is used. There is no plan to
+make Windows Y use any lower-level interface. It may be desirable to
+make Y libraries for other platforms such as Macintosh.
+
+<p>Y is a C library, to allow easy linking to many languages. Also at
+the level of Y "objects" serve no useful purpose and actually make
+things harder for the user.
+
+<p>Y provides three basic services: graphics, events, and shell.
+
+<h2>Graphics</h2>
+
+All graphics calls rely on a "current graphics state" which is
+implicitly provided to all Y calls, much like OpenGL has such a
+state. This does not prevent multithreading, like OpenGL each thread
+will have it's own graphics state (not implemented yet, currently Y is
+single threaded).
+
+<p>The graphics state will contain the device, window, transformation,
+clipping, current color, current font, and other state. There are
+calls to duplicate a graphics state, to set the current one, and to
+destroy one.
+
+<p>Graphics calls greatly resemble PostScript's base set of
+functions. Paths are constructed and then filled/stroked.  The set of
+graphics calls will be made as small as possible.  Y graphics are
+designed to by non-synchronous: few functions (except obvious library
+local functions) have return values. This allows very efficient
+buffered pipelines to a server running in a different process or on a
+different machine.
+
+<p>The creation, mapping, moving, and destruction of windows are
+considered graphics calls.
+
+<p>The library will have redirection tables built in, to easily allow
+the graphics calls to be sent to different implementations. The
+current version can direct calls to an Xlib implementation, an
+Xrender/Xft implementation, to write PostScript to a file descriptor,
+and to an OpenGL implementation.
+
+<p>The only form of text accepted is UTF-8, Y will handle encoding
+errors such that the vast majority of ISO-8859-1 and Windows encoded
+text will display correctly.
+
+<h2>events</h2>
+
+Y will provide an interface to efficiently callback functions when
+file descriptors become ready or when the user does things to any
+graphics device that they have a graphics context to. A single call,
+ywait(time), will do the callbacks and allow a program to accurately
+wait a period of time. This will be modeled on the newest versions of
+fltk's event handling.
+
+<p>On Unix this could be a totally seperate library. It is part of Y
+to allow Y to be portable to Windows and perhaps other systems where
+the GUI events do not trigger a file descriptor.
+
+<p>Like X, damage is reported as rectangles. A program may accumulate
+these and send the region back as a clip region, like current X
+programs. Or a program may set the clip directly to the the current
+damage, perhaps getting a larger or more complex area, but unable to
+know what it is and thus forced to draw the entire window.
+
+<p>Typing on the keyboard is translated to UTF-8. Y may support
+complex character composing services, each keystroke will be reported
+as a set of bytes to delete and replace so that preview of
+partially-composed letters is trivial for the application.
+
+<p>All possible knobs (like pressure and angle on a stylus) on a
+machine will produce events without any setup by the user program. It
+is much easier to ignore the events that to arrange them initially.
+
+<p>Drag and drop is supported in a very simple and clean way. All
+windows are potential drop targets. The only form of data is URL.
+
+<h2>shell</h2>
+
+Several functions that any program needs to cooperate with other
+programs. Currently these are provided by code buried in KDE and
+Gnome, inextricably linked with other code that is totally unnecessary
+for a program.
+
+<p>A program that may be exec'd called "start" which takes a URL and
+does the proper action when a user double-clicks a URL. A switch to
+"start" will make it instead print to stdout a list of possible
+actions so an interface can provide a menu. The initial version will
+use KDE's kdelnk files but I think a nicer design can be made.
+
+<p>A well defined location (~/.start?) will provide a hierarchy of
+URL's that an interface can display as a list of useful things the
+user may want to select and send to "start".
+
+<p>A list of all "tasks" for each graphics device. Each task is
+created by and belongs to one process. For each entry a name, host,
+pid, and "start" URL are provided, and a (possibly zero-length) list
+of windows belonging to that task, and a parent task. A program may
+create as many tasks as it wants and change the window list for
+them. Tasks will receive events when the user runs the "start" program
+and should respond by opening the provided URL and making a new task.
+
+<p>A list of all "windows" for each graphics device. Each has a name
+and a (possibly null) task.
+
+<p>An interface to cause a logout. An interface to logout and login as
+another user (requires program to have the new user's privledges). An
+interface to cause the calling program to replace the window manager.

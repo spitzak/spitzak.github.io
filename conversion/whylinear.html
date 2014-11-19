@@ -1,0 +1,96 @@
+<html><head><title>Why Render in Linear Floating Point</title></head><body bgcolor=black text=#c0c0c0 link=#80c0c0 vlink=#ffc0c0>
+
+<h1>Why Render in Linear Floating Point?</h1>
+
+<p>Almost all image processing and 3D rendering and shading
+algorithims written today <i>assumme the image is in Linear Floating
+Point</i>. For example most renderers assumme that a projected light, if
+spread across an area twice as large as before, will result in a
+image value that is half what it was originally, because in the real
+world half as many photons reach each portion of the surface.
+
+<p>Unfortunately almost all software out there today assumme images
+are stored in files by multiplying Linear Floating Point by some
+constant (usually 255).  In reality these images when displayed on a
+screen result in luminances that match the <a
+href=srgb.html>sRGB</a> curve. A number half as big as another number
+is less than 1/4 as bright, and not 1/2 as bright as the algorithim
+expected.
+
+<p>Here is a photograph of a real scene, showing some overlapping
+lights.
+
+<br><img src=pics/lightreal.jpg>#1
+
+<p>Here is a simulation using rather simple but physically accurate
+light calculations. The floating point output of the shading
+calculations were converted to sRGB so that the resulting display has
+the same luminance as the shading algorithim thought it was
+making. Notice that this did pretty good and without any manual
+adjustment of the shaders:
+
+<br><img src=pics/lightsrgb.jpg>#2
+
+<p>Here is what most renderers do when trying to simulate this
+scene. They calculate the light quite accurately in linear floating
+point, but then assumme that they can store the image by multiplying
+by 255 to get the bytes to go into the file:
+
+<br><img src=pics/lightlinear.jpg>#3
+
+<p>Most users of rendering software today see results like #3 above,
+and conclude that lighting is much more complex and non-scientific
+than they thought. They then throw in fake lights (like global fill),
+or paint objects strange colors, or write elaborate shaders that do
+not match the laws of physics, in order to compensate for this wrong
+conversion and produce the desired output. This is all tedious and
+never results in a perfect image, and could be solved by having
+renderers correctly convert to sRGB from linear.
+
+<p>(Photos and renderings by Dan Lemmon)
+
+<h1>Problems with rendering in Linear Floating Point</h1>
+
+This may all seem obvious and trivial to fix, but there is an enormous
+amount of intertia to overcome, and commercial rendering software is
+nowhere near ready to do this correctly yet:
+
+<ul>
+
+<li>There are huge libraries of software written that compensate for
+this wrong approach, and the output of these looks wrong when the
+conversion is done correctly! Fortunatly you can approximate the
+conversion from linear to sRGB by the square root, and the conversion
+back by the square, and this is accurate enough to fix these
+algorithims. So it is possible to rewrite them without slowing them
+down a huge amount. [More recently I have started using x/(1+x) as the
+conversion function (and x/(x-1) to convert back to linear), this is
+faster and handles High Dynamic Range as well].
+
+<li><i>Some</i> rendering software today has "output shaders" to
+correctly convert floating point results to sRGB. Most have some way
+to write the floating point numbers to a file so you can write a
+program to convert them. But in neither case is this easy or the
+default setting.
+
+<li>All rendering software today lacks "input shaders" to do the
+inverse correction of texture maps that you read in. The result is
+that texture maps are almost useless, even if you pre-correct them you
+will get bad image quality becuase the resulting map is stored in
+linear space, which I showed before is a poor way to store images.
+
+<li>All 3D modelling packages and all 3D graphics hardware draw
+without converting from linear to sRGB, so you cannot get wysiwyg
+previews of what your renders will look like. New graphics cards
+calculate in (16-bit) floating point and are easily capable of doing
+the correct conversion to the 8-bit frame buffer, but none do this by
+default yet.
+
+</ul>
+
+<p>Maybe these problems will be addressed soon?
+
+<p><a href=index.html>Return to main page</a>
+
+</body></html>
+

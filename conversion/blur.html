@@ -1,0 +1,58 @@
+<html><head><title>High-speed Conversion of Floating Point Images to
+8-bit</title></head><body bgcolor=black text=#c0c0c0 link=#80c0c0 vlink=#ffc0c0>
+
+<form>
+
+Now we are going to take the original image and blur it.
+
+<p>The blur we are going to apply is a very simple and fast 2-pass
+Gaussian filter. This is the convolution of the image with a 10x1
+vertical filter followed by a 1x10 horizontal filter. No thresholding
+or any complex math is done, just convolution like you might read in a
+introduction to graphics textbook.
+
+<p>Here is the image again (this is an overhead view of lights in
+downtown Los Angeles). This is just a plain old 8-bit per color image,
+it is not High Dynamic Range or anything:
+
+<br><img src=pics/original.jpg name="myimage">
+
+<p>
+<input type=radio name=op1 value="val" onClick="myimage.src = 'pics/original.jpg'" checked>Original
+<input type=radio name=op1 value="val" onClick="myimage.src =
+'pics/blurlinear.jpg'">Normal blur
+<input type=radio name=op1 value="val" onClick="myimage.src =
+'pics/blursrgb.jpg'">Blur in Linear Floating Point
+<input type=radio name=op1 value="val" onClick="myimage.src =
+'pics/blurtrolloff.jpg'">Blur with rolloff
+
+<p>The Normal Blur is what most software will do when you blur the
+image. You should be able to see that it gets darker, and many of the
+smaller lights disappear. The fact that small dots disappear when you
+blur leads many people to think that replicating depth of field or
+focus effects requires complex math with thresholding and comparisons
+or color corrections before and after the blur.
+
+<p>The Linear image is the image converted from sRGB to linear,
+blurred with exactly the same algorithim, and then converted
+back. Notice that the luminance is the same and it looks a lot more
+like an out-of-focus version of the first one. Now all we have to do
+is more accurately model the lens in order to get realistic blur, we
+don't need to mess with the colors!
+
+<p>In the last image the conversion between sRGB and linear is through
+the <i>to_byte_compressed</i> function as described in the paper. This
+makes the brighter values in the file turn into values greater than 1
+(and thus they blur out into bright circles). This does a pretty good
+job of picking out the brighter lights, even though the original image
+was clipped. This shows that we can use High Dynamic Range methods
+with 8-bit files by altering the conversion.  My algorithim can do
+conversions where the floating point numbers go outside the 0 to 1
+range. Any function that has a positive derivative everywhere is
+supported.
+
+<p><a href=composite.html>Go back</a>
+</form>
+
+</body></html>
+

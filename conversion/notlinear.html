@@ -1,0 +1,44 @@
+<html><head><title>High-speed Conversion of Floating Point Images to
+8-bit</title></head><body bgcolor=black text=#c0c0c0 link=#80c0c0 vlink=#ffc0c0>
+
+<h1>When not to use linear floating point</h1>
+
+There are a few places where you expect linear floating point to work
+better and it comes out worse. The reason for this is that many
+algorithims are designed to produce an perceptually-uniform output and
+linear floating point is <i>not</i> perceptually uniform.
+
+<p>For instance a straight gray ramp looks quite non-centered when drawn
+in linear floating point:
+
+<p><img src=pics/ramplinear.gif>
+
+<p>The same ramp drawn directly in sRGB output pixels produces what
+most people expect:
+
+<p><img src=pics/rampsrgb.gif>
+
+<p>Fortunately you can easily get quite close to the sRGB output by
+simply squaring the values before using in a linear
+representation. This makes it relatively easy to modify an existing
+algorithms to produce similar output in linear floating point without
+changing their speed much. Here is the ramp squared (so the .5 in the
+middle turned into .25) in linear floating point:
+
+<p><img src=pics/rampsrgb.gif>
+
+<p>A problem I have not solved is when both the true linear and the
+perceptual data is needed. This seems to be a problem with line art
+graphics. The left column is some text and and graphics drawn in
+linear floating point, and the right is the same graphics drawn in
+sRGB. The bottom row is exaclty the inverse of the top row:
+
+<p><img src=pics/textasrgb.png><img src=pics/textalinear.png>
+<br><img src=pics/textbsrgb.png><img src=pics/textblinear.png>
+
+<p>The linear image produces better antialiasing. But it looks like
+the sRGB version produces the correct inverted image. In fact
+mathematically the linear inverted image is correct, but your mind
+apparently inverts things in perceptually-uniform space, making the
+sRGB look like the correct inverse. I am not sure if there is a way to
+get both nice antialiasing and get the expected inverted image.

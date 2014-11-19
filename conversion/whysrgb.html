@@ -1,0 +1,86 @@
+<html><head><title>Why use sRGB to store images?</title></head><body bgcolor=black text=#c0c0c0 link=#80c0c0 vlink=#ffc0c0>
+
+<p>It turns out that sRGB is a reasonably good way to store
+photographic images, because it is approximately <i>perceptually
+uniform</i>.  This means it is an efficent encoding of levels of
+luminance that matches the human eye's ability to percieve levels of
+luminance. This is described in great detail by <a
+href=http://www.poynton.com/GammaFAQ.html>Charles
+Poynton's Gamma FAQ</a>.
+
+<p>The fact that this is a good encoding is a <i>huge coincidence</i>,
+(or it as an indication that our eyes and electronics
+designed in the 1920's are both subject to similar laws of physics).
+
+<p>Most images are stored with 8-bit per channel, giving you 256
+possible levels of gray. We want to choose 256 levels of gray to store
+in these slots to give us the best image. In this example I have used
+only 32 slots so the differences are more obvious:
+
+<p align=center><img src=pics/ramp.gif>
+<br><img src=pics/linear16.gif>&nbsp;<img src=pics/srgb16.gif>&nbsp;<img
+src=pics/log16.gif>
+
+<p>The left column is what you get if you do the "obvious" thing,
+which is to multiply the number in the file by a constant to get the
+light level, this is called <i>linear</i> coding. As you can see, the
+first color above black is quite bright. You would have a hard time
+making smooth dark areas in such an image. Also you cannot distinguish
+the top colors at all, meaning the bits used to store the difference
+between them is totally wasted.
+
+<p>The second column shows 32 levels evenly distributed on the sRGB
+curve. Here you can see each step, and each step appears about the
+same to your eye and brain. This means it is more uniform
+<i>perceptually</i>, even though if you took a light meter and
+measured the luminance of each row, you would find the first column is
+a straight line while the second is a curve.
+
+<p>Some people, in particular <a
+href=http://www.aim-dtp.net/aim/aim_faq.htm>Timo Autiokari</a>, have
+argued that sRGB is not <i>perfectly</i> perceptually uniform. Indeed
+this is true, the right column shows a <i>logarithmic</i> coding,
+where each level is the luminance of the previous multiplied by a
+constant. This is obviously more uniform. However there never has been a
+claim that sRGB is perfect. sRGB's other claim is <i>it matches how
+existing computer displays work</i> and this means that virtually
+every digital image in existence today is stored in this format. For
+this reason it appears that the minor improvement you get with a more
+uniform encoding is not worth it. Logarithmic encoding also has
+problems in that there is no way to represent zero light, and it is
+not obvious how to increase the bit depth of a log encoding.
+
+<p>(You can read about Timo's arguments with <a
+href=http://www.poynton.com/>Charles Poynton</a> about this <a
+href=http://www.aim-dtp.net/aim/calibration/poynton/poynton-color-tech.htm>here</a>,
+or read <a
+href=http://www.poynton.com/notes/Timo/Concerning_Timo.html>Mr
+Poynton's responses</a>.) Timo seems to have altered his pages
+recently and they now have many examples similar to this page showing
+that <i>calculations</i> in linear space are better. However he is
+still confused into believing this requires linear storage. As this
+paper tries to demonstrate, you can convert from linear to a
+non-linear storage quite efficiently.
+
+<p>Lots of people think the solution is to stay linear, but to put
+more bits in the file. Years ago 12 and 16 bit storage was very
+common. But this is a total waste, all it does is insert the same
+number of new slots between each of the existing ones. In the example
+above it should be obvious that the linear encoding needs no new
+values inserted at the top, but many new values inserted at the
+bottom. In fact you would have to go to <i>13</i> bits before the steps near
+black are as fine as they are in an 8-bit sRGB file! If you used 13
+bits with sRGB you would again be way ahead of the linear encoding for
+quality.
+
+<p>A lot of other people think that linear floating point values
+should be stored. This does make sense and we do it extensively. But
+it turns out that the popular methods of storing floating point
+numbers (mantissa + exponent) is in fact somewhat logarithimic. The
+steps between each possible number are much finer near black than near
+white.
+
+<p><a href=index.html>Return to main page</a>
+
+</body></html>
+

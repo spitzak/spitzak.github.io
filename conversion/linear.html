@@ -1,0 +1,30 @@
+<html><head><title>What is Linear Floating Point</title></head><body bgcolor=black text=#c0c0c0 link=#80c0c0 vlink=#ffc0c0>
+
+<i>Linear Floating Point</i> means an image represented as floating point
+numbers where the luminance of a pixel is the number multiplied by
+a constant. I set the constant so that 1.0 is the brightest color you can
+see on a typical monitor and the value you want to convert to the
+largest value in a typical clipped image format such as a jpeg file.
+
+<p>When you multiply a linear floating point image value by 2, you
+will get a new value that is twice as bright. Or you can say that .5
+is half as bright as 1.
+
+<p>The values have to be stored in floating point. Storing fixed-point
+(or multiplying by a constant and storing integers) is not an
+efficient use of memory for storing images, as described <a
+href=whysrgb.html>here</a>.
+
+<p><i>High Dynamic Range:</i> Many people think the purpose of
+floating point is to store High Dynamic Range (HDR) images, meaning
+images with values outside the 0 to 1 range. It is true that most
+methods of efficiently storing a floating point value (such as
+exponent + mantissa) also will store values outside the 0 to 1
+range. And my algorithims are able to convert to and from HDR if you
+use functions other than sRGB. But in fact there are <i>many</i>
+advantages to linear even if you do not go out of range.
+
+<p><a href=index.html>Return to main page</a>
+
+</body></html>
+

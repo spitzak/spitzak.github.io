@@ -1,0 +1,30 @@
+<html><head><title>High-speed Conversion of Floating Point Images to
+8-bit</title></head><body bgcolor=black text=#c0c0c0 link=#80c0c0 vlink=#ffc0c0>
+
+<h1>Dithering</h1>
+
+The other thing my algorithim does is dithering. Dithering adds noise
+to the floating point result before converting so that the resulting
+image averages more accurately to the actual brightness.
+
+<p>Here is a straight-forward result of converting a linear ramp to
+the nearest sRGB byte value. In these examples I have exaggerated the
+error by only using 32 levels instead of 256:
+
+<p><img src=pics/nodither.gif>
+
+<p>And here is the output of my algorithm (again if it is used to
+produce only 32 levels instead of 256). It is a lot smoother, and in
+the center you can see the dithering pattern:
+
+<p><img src=pics/dither.gif>
+
+<p>Dithering is done by error diffusion: the error in luminosity of
+the output sRGB byte is added to the next pixel, so they all average
+out to the correct luminosity. The diffusion is done in the sRGB
+space, even though this is less accurate than in the linear space. The
+reason I do it in the sRGB space is partly that a much more efficient
+algorithim can be used and also that the linear one can introduce
+large enough changes that some byte values are skipped completely,
+resulting in less smooth patterns. Also at the scale of dithering (3
+adjacent byte values) the sRGB plot is quite close to a straight line.

@@ -1,0 +1,52 @@
+<html><head><title>Type "0" proposal</title>
+</head><body>
+
+<h1>Proposal: New 'keyword' "0" that can be used as a type argument to
+functions</h1>
+
+<p>Another crazy C++ suggested addition that some other people here
+actually said made sense, much to my suprise:
+
+<p>Define the built-in type "0".  Literally, the keyword is a zero
+digit character.
+
+<p>Functions/methods/constructors may be defined as taking a "0"
+argument.  This means they can only be called with the literal
+value zero (any constant expression that can be assigned to a
+pointer and called the "null pointer" in current C++).  You
+cannot declare variables or return values of the type "0", and
+you cannot name the "0" argument or use it in the implementation.
+
+<p>The purpose is of course to allow a class to define a conversion
+from null, without inadvertantly defining a conversion from any
+integer:
+
+<p><pre>class witty_pointer&lt;obj&gt; {
+public:
+    witty_pointer(obj*);
+    witty_pointer(0); // null pointer constructor
+    operator=(witty_pointer &);
+    operator=(0); // assignment from a null constant
+};
+</pre>
+
+<p>I think that existance of a constructor from 0 would also mean that
+the automatic boolean cast of a!=0 would no longer exist and you
+would have to provide a cast to bool for "if (a)" to work.  It
+may also be argued that there is an automatic cast to bool of
+"a != A(0)" but this could lead to unexpected code bloat.
+
+<p>'0' would also be useful for overloading functions that take pointers
+or integers in cases where the implementation for the value of
+zero is much simpler than for any other value.  The compiler would
+then produce direct calls to the zero implementation if a constant
+zero is provided.  It is up to the programmer to insure that the
+non-zero version acts just like the zero version if passed a zero
+that was calculated.
+
+<p>It may also be a good idea to say that static variables with a zero
+constructor are initialized by that constructor.
+
+<p>Bill Spitzak
+
+</body></html>
